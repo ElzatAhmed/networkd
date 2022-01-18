@@ -5,7 +5,7 @@ import networkx as nx
 import numpy as np
 
 
-class DisNet(ABC):
+class _DisNet(ABC):
 
     """
     abstract class for disintegration networks
@@ -46,6 +46,18 @@ class DisNet(ABC):
         if eid > len(self._edges):
             return
         self._edge_flag[eid] = 0
+
+    @abc.abstractmethod
+    def add_node_(self, node, **attr):
+        pass
+
+    @abc.abstractmethod
+    def add_edge_(self, n1, n2, **attr):
+        pass
+
+    @abc.abstractmethod
+    def from_nxGraph(self, graph: nx.Graph):
+        pass
 
     @property
     def nodes(self) -> list:
@@ -123,7 +135,37 @@ class DisNet(ABC):
         return con
 
 
-class TopologicalDisNet(DisNet):
+class TopologicalDisNet(_DisNet):
+
+    """
+    Topological disintegration network
+    """
 
     def __init__(self):
-        super().__init__()
+        _DisNet.__init__(self)
+
+    def add_node_(self, node, **attr):
+        if node in self._nodes:
+            nid = self._nodes.index(node)
+            if self._node_flag[nid]:
+                raise Exception(f'disnet contains a same node: {node}')
+            else:
+                self._node_flag[nid] = 1
+                return
+        self._nodes.append(node)
+        self._node_flag.append(1)
+
+    def add_edge_(self, n1, n2, **attr):
+        if n1 in self.nodes and n2 in self.nodes:
+            self._edges.append((n1, n2))
+            self._edge_flag.append(1)
+            return
+        raise Exception('n1 or n2 is not a node in disnet')
+
+    def from_nxGraph(self, graph: nx.Graph):
+        self._nodes.clear()
+        self._edges.clear()
+        for node in graph.nodes:
+            self.add_node_(node)
+        for edge in graph.edges:
+            self.add_edge_(edge[0], edge[1])
