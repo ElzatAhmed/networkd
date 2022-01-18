@@ -21,6 +21,13 @@ class DisNet(ABC):
         return f'DisNet with {self.node_count} nodes and {self.edge_count} edges'
 
     def kill_node_(self, nid: int):
+
+        """
+        killing the node with given id and the corresponding edges
+        :param nid: node id
+        :return:
+        """
+
         if nid > len(self._nodes):
             return
         self._node_flag[nid] = 0
@@ -29,6 +36,13 @@ class DisNet(ABC):
                 self._edge_flag[i] = 0
 
     def kill_edge_(self, eid: int):
+
+        """
+        killing the edge with the given id
+        :param eid: edge id
+        :return:
+        """
+
         if eid > len(self._edges):
             return
         self._edge_flag[eid] = 0
@@ -107,3 +121,9 @@ class DisNet(ABC):
             for j in paths[i]:
                 con[i][j] = 1
         return con
+
+
+class TopologicalDisNet(DisNet):
+
+    def __init__(self):
+        super().__init__()
