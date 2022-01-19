@@ -5,7 +5,7 @@ import networkx as nx
 import numpy as np
 
 
-class _DisNet(ABC):
+class DisNet(ABC):
 
     """
     abstract class for disintegration networks
@@ -135,14 +135,14 @@ class _DisNet(ABC):
         return con
 
 
-class TopologicalDisNet(_DisNet):
+class TopologicalDisNet(DisNet):
 
     """
     Topological disintegration network
     """
 
     def __init__(self):
-        _DisNet.__init__(self)
+        super(TopologicalDisNet, self).__init__()
 
     def add_node_(self, node, **attr):
         if node in self._nodes:

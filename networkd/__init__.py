@@ -1,1 +1,2 @@
-from .classes import TopologicalDisNet
+from .classes import *
+from .disintegration import *

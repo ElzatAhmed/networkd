@@ -1,1 +1,1 @@
-from .networks import TopologicalDisNet
+from .networks import DisNet, TopologicalDisNet
