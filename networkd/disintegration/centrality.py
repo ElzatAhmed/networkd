@@ -34,10 +34,10 @@ class Centrality(ABC):
     @property
     def max_node(self):
         """
-        :return: the node with the max centrality value
+        :return: a list of nodes with the max centrality value
         """
         values = self.sorted_value
-        return values[0] if len(values) > 0 else None
+        return [values[0]] if len(values) > 0 else None
 
 
 class DegreeCentrality(Centrality):
