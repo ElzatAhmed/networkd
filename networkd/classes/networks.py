@@ -113,7 +113,7 @@ class DisNet(ABC):
         return graph
 
     def _adj(self):
-        adj = np.zeros(shape=(self.node_count, self.node_count), dtype=np.int64)
+        adj = np.zeros(shape=(len(self._nodes), len(self._nodes)), dtype=np.int64)
         for edge in self.edges:
             adj[edge[0]][edge[1]] = 1
         return adj
@@ -128,7 +128,7 @@ class DisNet(ABC):
 
     def _con(self):
         paths = dict(nx.all_pairs_shortest_path(self.xGraph))
-        con = np.zeros(shape=(self.node_count, self.node_count), dtype=np.int64)
+        con = np.zeros(shape=(len(self._nodes), len(self._nodes)), dtype=np.int64)
         for i in paths:
             for j in paths[i]:
                 con[i][j] = 1
