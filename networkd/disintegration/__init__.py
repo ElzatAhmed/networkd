@@ -1,2 +1,8 @@
-from .centrality import DegreeCentrality, BetweennessCentrality, SemiLocalCentrality
-from .disintegration import Disintegration
+from .centrality import DegreeCentrality, \
+    BetweennessCentrality, \
+    SemiLocalCentrality,   \
+    NodeCentrality,        \
+    EdgeCentrality
+from .disintegration import Disintegration, \
+    NodeDisintegration, \
+    EdgeDisintegration
