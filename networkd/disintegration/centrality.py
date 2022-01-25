@@ -2,6 +2,7 @@ import abc
 
 from networkd.classes import DisNet
 import networkx as nx
+import numpy as np
 from abc import ABC
 
 
@@ -37,7 +38,6 @@ class _Centrality(ABC):
     def descending(self):
         return self._sorted()
 
-    @property
     def minimum(self) -> list:
         values = self._sorted(reverse=False)
         if len(values) > 0:
@@ -46,7 +46,6 @@ class _Centrality(ABC):
             return [values[0]]
         return []
 
-    @property
     def maximum(self) -> list:
         values = self._sorted()
         if len(values) > 0:
@@ -55,9 +54,11 @@ class _Centrality(ABC):
             return [values[0]]
         return []
 
-    @property
     def mean(self) -> list:
-        return []
+        # TODO: implementation
+        values = list(self.dictionary.items())
+        mean = np.mean(values)
+        return list()
 
     @property
     def network(self) -> DisNet:
@@ -108,4 +109,18 @@ class SemiLocalCentrality(NodeCentrality):
         super(SemiLocalCentrality, self).__init__(network)
 
     def _dictionary(self):
-        return dict()
+        return self._semi_local()
+
+    def _semi_local(self):
+        adj = self._network.adj
+        semi_local = {}
+        nodes = self._network.nodes
+        for node in nodes:
+            value = 0
+            for i in range(len(adj[node])):
+                neighbor = adj[node][i]
+                if neighbor:
+                    value += sum(adj[i])
+            semi_local[node] = value
+        return semi_local
+
