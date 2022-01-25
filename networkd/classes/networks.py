@@ -48,7 +48,7 @@ class DisNet(ABC):
         self._edge_flag[eid] = 0
 
     @abc.abstractmethod
-    def add_node_(self, node, **attr):
+    def add_node_(self, **attr) -> int:
         pass
 
     @abc.abstractmethod
@@ -144,16 +144,11 @@ class TopologicalDisNet(DisNet):
     def __init__(self):
         super(TopologicalDisNet, self).__init__()
 
-    def add_node_(self, node, **attr):
-        if node in self._nodes:
-            nid = self._nodes.index(node)
-            if self._node_flag[nid]:
-                raise Exception(f'disnet contains a same node: {node}')
-            else:
-                self._node_flag[nid] = 1
-                return
-        self._nodes.append(node)
+    def add_node_(self, **attr) -> int:
+        nid = len(self._nodes)
+        self._nodes.append(nid)
         self._node_flag.append(1)
+        return nid
 
     def add_edge_(self, n1, n2, **attr):
         if n1 in self.nodes and n2 in self.nodes:
@@ -165,7 +160,7 @@ class TopologicalDisNet(DisNet):
     def from_nxGraph(self, graph: nx.Graph):
         self._nodes.clear()
         self._edges.clear()
-        for node in graph.nodes:
-            self.add_node_(node)
+        for _ in graph.nodes:
+            self.add_node_()
         for edge in graph.edges:
             self.add_edge_(edge[0], edge[1])
