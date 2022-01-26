@@ -1,1 +1,1 @@
-from .plot import plot
+from .visualize import plot, toHtml

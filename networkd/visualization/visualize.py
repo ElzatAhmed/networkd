@@ -44,7 +44,7 @@ def toHtml(
     if show_buttons:
         pynet.width = 1000
         pynet.show_buttons()
-    pynet.show()
+    pynet.show(save_path)
 
 
 def _random_pos(graph: nx.Graph):
