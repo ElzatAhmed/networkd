@@ -3,6 +3,7 @@ from abc import ABC
 
 import networkx as nx
 import numpy as np
+import json
 
 
 class DisNet(ABC):
@@ -59,6 +60,14 @@ class DisNet(ABC):
     def from_nxGraph(self, graph: nx.Graph):
         pass
 
+    @abc.abstractmethod
+    def from_json(self, file):
+        pass
+
+    @abc.abstractmethod
+    def dict(self) -> dict:
+        pass
+
     @property
     def nodes(self) -> list:
         """
@@ -112,6 +121,10 @@ class DisNet(ABC):
         graph.add_edges_from(self.edges)
         return graph
 
+    @property
+    def json(self) -> str:
+        return json.dumps(self.dict(), indent=2)
+
     def _adj(self):
         adj = np.zeros(shape=(len(self._nodes), len(self._nodes)), dtype=np.int64)
         for edge in self.edges:
@@ -144,6 +157,12 @@ class TopologicalDisNet(DisNet):
     def __init__(self):
         super(TopologicalDisNet, self).__init__()
 
+    def dict(self):
+        return {
+            'nodes': self.nodes,
+            'edges': self.edges
+        }
+
     def add_node_(self, **attr) -> int:
         nid = len(self._nodes)
         self._nodes.append(nid)
@@ -163,4 +182,20 @@ class TopologicalDisNet(DisNet):
         for _ in graph.nodes:
             self.add_node_()
         for edge in graph.edges:
+            self.add_edge_(edge[0], edge[1])
+
+    def from_json(self, source):
+        if type(source) is str:
+            dict_obj = json.loads(source)
+        elif type(source) is dict:
+            dict_obj = source
+        else:
+            dict_obj = json.load(source)
+        assert 'nodes' in dict_obj
+        assert 'edges' in dict_obj
+        self._node_flag = [0 for _ in range(max(dict_obj['nodes']) + 1)]
+        self._nodes = [i for i in range(max(dict_obj['nodes']) + 1)]
+        for node in dict_obj['nodes']:
+            self._node_flag[node] = 1
+        for edge in dict_obj['edges']:
             self.add_edge_(edge[0], edge[1])
